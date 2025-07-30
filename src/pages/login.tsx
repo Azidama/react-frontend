@@ -9,9 +9,12 @@ import {
   Container, 
   Link,
   Divider,
-  Grid
+  Grid,
+  Alert
 } from '@mui/material';
 import axios from 'axios';
+import { LOGIN_MUTATION } from '../graphql/auth';
+import { useMutation } from '@apollo/client';
 
 type FormData = {
   email: string;
@@ -27,15 +30,34 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>();
+  } = useForm<FormData>()
+
+  
+const [login] = useMutation(LOGIN_MUTATION, {
+    onCompleted: (data) => {
+    console.log('Login token:', data)
+    // navigate('/dashboard');
+    },
+    onError: (err) => {
+        console.log(err)
+    }
+  })
 
   const onSubmit = async (data: FormData) => {
     try {
-      setError('');
+      setError('')
+      await login({
+        variables: {
+          userData: {
+            email: data.email,
+            password: data.password
+          }
+        }
+      })
       // Replace with your actual API endpoint
-      const response = await axios.post('/api/auth/login', data);
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
+      // const response = await axios.post('/api/auth/login', data);
+      // localStorage.setItem('token', response.data.token);
+      // navigate('/dashboard');
     } catch (err) {
       setError('Invalid email or password. Please try again.');
     }
