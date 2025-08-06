@@ -14,6 +14,6 @@ export interface Assignment {
     title: string;
     code: string;
     description: string;
-    assignments: Assignment[];
-    enrollment: Enrollment[];
+    // assignments: Assignment[];
+    // enrollment: Enrollment[];
   }
