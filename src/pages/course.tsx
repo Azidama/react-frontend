@@ -1,63 +1,63 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { 
-  Grid, 
-  Card, 
-  CardContent, 
-  Typography, 
-  CardActions, 
-  Button, 
-  CircularProgress,
+import {
   Box,
-  Chip
+  Card,
+  CardContent,
+  CardActionArea,
+  Chip,
+  Container,
+  Grid,
+  LinearProgress,
+  Typography
 } from '@mui/material';
-import { GET_COURSES } from '../graphql/courses';
-import { type Course, type Assignment } from '../types/course';
-import { format } from 'date-fns';
+import { GET_COURSES } from '../graphql/courses'
+import { type Course } from '../types/course'; // Your Course type
 
 const CoursesPage = () => {
-  const { loading, error, data } = useQuery<{ courses: Course[] }>(GET_COURSES);
+  const { loading, error, data } = useQuery<{ getCourses: Course[] }>(GET_COURSES);
 
-  if (loading) return (
-    <Box display="flex" justifyContent="center" mt={4}>
-      <CircularProgress />
-    </Box>
-  );
-
+  if (loading) return <LinearProgress sx={{ mt: 2 }} />;
+  
   if (error) return (
-    <Box display="flex" justifyContent="center" mt={4}>
+    <Box textAlign="center" mt={4}>
       <Typography variant="h6" color="error">
         Error loading courses: {error.message}
       </Typography>
     </Box>
   );
 
-  if (!data?.courses.length) return (
-    <Box display="flex" justifyContent="center" mt={4}>
-      <Typography variant="h5">
-        No courses found. Enroll in a course to get started.
-      </Typography>
-    </Box>
-  );
+  const courses = data?.getCourses || [];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 500 }}>
-        My Courses
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ 
+        fontWeight: 700, 
+        mb: 4,
+        textAlign: 'center',
+        color: 'primary.main'
+      }}>
+        Available Courses
       </Typography>
       
-      <Grid container spacing={3}>
-        {data.courses.map((course) => (
-          <Grid item key={course.id} xs={12} sm={6} md={4}>
-            <CourseCard course={course} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+      {courses.length === 0 ? (
+        <Box textAlign="center" mt={4}>
+          <Typography variant="h6">
+            No courses available yet. Check back soon!
+          </Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+          {courses.map((course) => (
+            <Grid item key={course.id} xs={12} sm={6} md={4} lg={3}>
+              <CourseCard course={course} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 };
-
-export default CoursesPage;
 
 // Course Card Component
 const CourseCard = ({ course }: { course: Course }) => (
@@ -65,68 +65,69 @@ const CourseCard = ({ course }: { course: Course }) => (
     height: '100%', 
     display: 'flex', 
     flexDirection: 'column',
-    boxShadow: 3,
-    transition: 'transform 0.3s',
+    border: '1px solid #e0e0e0',
+    borderRadius: 2,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+    transition: 'transform 0.3s, box-shadow 0.3s',
     '&:hover': {
       transform: 'translateY(-5px)',
-      boxShadow: 6
+      boxShadow: '0 6px 16px rgba(0,0,0,0.1)'
     }
   }}>
-    <CardContent sx={{ flexGrow: 1 }}>
-      <Typography variant="h6" color="primary" gutterBottom>
-        {course.code}
-      </Typography>
-      <Typography variant="h5" gutterBottom>
-        {course.title}
-      </Typography>
-      
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {course.description || 'No description available'}
-      </Typography>
-      
-      <Box sx={{ mb: 2 }}>
+    <CardActionArea sx={{ flexGrow: 1 }}>
+      <CardContent sx={{ flexGrow: 1 }}>
         <Chip 
-          label={`${course.assignments.length} assignments`} 
+          label={course.code} 
           size="small" 
-          sx={{ mr: 1 }} 
+          sx={{ 
+            mb: 1.5,
+            fontWeight: 700,
+            backgroundColor: '#f0f7ff',
+            color: 'primary.main'
+          }} 
         />
-        <Chip 
-          label={`Enrolled: ${format(new Date(course.enrollment[0]?.enrolledAt), 'MMM d, yyyy')}`} 
-          size="small" 
-          color="info"
-        />
-      </Box>
-      
-      {course.assignments.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Upcoming Assignments:
-          </Typography>
-          <ul style={{ paddingLeft: 20, margin: 0 }}>
-            {course.assignments.slice(0, 3).map((assignment) => (
-              <li key={assignment.id}>
-                <Typography variant="body2">
-                  {assignment.title} - {format(new Date(assignment.dueDate), 'MMM d')}
-                </Typography>
-              </li>
-            ))}
-          </ul>
-          {course.assignments.length > 3 && (
-            <Typography variant="caption">
-              +{course.assignments.length - 3} more
-            </Typography>
-          )}
-        </Box>
-      )}
-    </CardContent>
+        
+        <Typography variant="h6" gutterBottom sx={{ 
+          fontWeight: 600, 
+          minHeight: '64px',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          {course.title}
+        </Typography>
+        
+        <Typography variant="body2" color="text.secondary" sx={{ 
+          minHeight: '80px',
+          overflow: 'hidden',
+          display: '-webkit-box',
+          WebkitLineClamp: 4,
+          WebkitBoxOrient: 'vertical'
+        }}>
+          {course.description}
+        </Typography>
+      </CardContent>
+    </CardActionArea>
     
-    <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
-      <Button size="small" variant="outlined">
-        View Assignments
-      </Button>
-      <Button size="small" variant="contained">
-        Enter Course
-      </Button>
-    </CardActions>
+    <Box sx={{ 
+      p: 2, 
+      display: 'flex', 
+      justifyContent: 'space-between',
+      borderTop: '1px solid #f5f5f5'
+    }}>
+      <Chip 
+        label="Enroll Now" 
+        size="small" 
+        sx={{ 
+          backgroundColor: '#4caf50', 
+          color: 'white',
+          fontWeight: 500
+        }} 
+      />
+      <Typography variant="caption" color="text.secondary">
+        ID: {course.id}
+      </Typography>
+    </Box>
   </Card>
 );
+
+export default CoursesPage;
