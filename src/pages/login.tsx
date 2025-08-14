@@ -1,50 +1,39 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Container,
-  Link,
-  Divider,
-  Grid,
-  Alert,
-} from "@mui/material";
-import axios from "axios";
-import { LOGIN_MUTATION } from "../graphql/auth";
-import { useMutation } from "@apollo/client";
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { Box, Button, TextField, Typography, Container, Link, Divider, Grid, Alert } from '@mui/material'
+import { LOGIN_MUTATION } from '../graphql/auth'
+import { useMutation } from '@apollo/client'
 
 type FormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>();
+  } = useForm<FormData>()
 
   const [login] = useMutation(LOGIN_MUTATION, {
-    onCompleted: (data) => {
-      console.log("Login token:", data);
+    onCompleted: data => {
+      console.log('Login token:', data)
       // navigate('/dashboard');
     },
-    onError: (err) => {
-      console.log(err);
+    onError: err => {
+      console.log(err)
     },
-  });
+  })
 
   const onSubmit = async (data: FormData) => {
     try {
-      setError("");
+      setError('')
       const response = await login({
         variables: {
           userData: {
@@ -52,48 +41,42 @@ const LoginPage = () => {
             password: data.password,
           },
         },
-      });
-      // Replace with your actual API endpoint
-      // const response = await axios.post('/api/auth/login', data);
-      console.log("response", response);
-      // localStorage.setItem('Authorization=', response.data.token)
+      })
+      console.log('response', response)
       // navigate('/dashboard');
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
+      setError('Invalid email or password. Please try again.')
     }
-  };
+  }
 
   return (
     <Container
       component="main"
       maxWidth="xs"
       sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#f3f2ef",
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#f3f2ef',
         py: 4,
       }}
     >
       <Box
         sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          bgcolor: "background.paper",
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          bgcolor: 'background.paper',
           borderRadius: 2,
           boxShadow: 1,
           p: 4,
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ mb: 3, fontWeight: 500, color: "#0a66c2" }}
-        >
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 500, color: '#0a66c2' }}>
           Genesis
-          <Box component="span" sx={{ color: "text.primary" }}>
+          <Box component="span" sx={{ color: 'text.primary' }}>
             Trainings
           </Box>
         </Typography>
@@ -102,10 +85,7 @@ const LoginPage = () => {
           Sign in
         </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{ mb: 3, textAlign: "center", color: "text.secondary" }}
-        >
+        <Typography variant="body1" sx={{ mb: 3, textAlign: 'center', color: 'text.secondary' }}>
           Some caption
         </Typography>
 
@@ -113,7 +93,7 @@ const LoginPage = () => {
           <Alert
             severity="error"
             sx={{
-              width: "100%",
+              width: '100%',
               mb: 2,
             }}
           >
@@ -121,11 +101,7 @@ const LoginPage = () => {
           </Alert>
         )}
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          sx={{ width: "100%" }}
-        >
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
           <TextField
             fullWidth
             variant="outlined"
@@ -135,8 +111,8 @@ const LoginPage = () => {
             autoFocus
             error={!!errors.email}
             helperText={errors.email?.message}
-            {...register("email", {
-              required: "Please enter your email or phone",
+            {...register('email', {
+              required: 'Please enter your email or phone',
             })}
           />
 
@@ -145,7 +121,7 @@ const LoginPage = () => {
             variant="outlined"
             margin="normal"
             label="Password"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             error={!!errors.password}
             helperText={errors.password?.message}
@@ -156,17 +132,17 @@ const LoginPage = () => {
                   type="button"
                   sx={{
                     fontSize: 14,
-                    textDecoration: "none",
-                    "&:hover": { textDecoration: "underline" },
+                    textDecoration: 'none',
+                    '&:hover': { textDecoration: 'underline' },
                   }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword ? 'Hide' : 'Show'}
                 </Link>
               ),
             }}
-            {...register("password", {
-              required: "Please enter your password",
+            {...register('password', {
+              required: 'Please enter your password',
             })}
           />
 
@@ -174,16 +150,16 @@ const LoginPage = () => {
             href="#"
             variant="body2"
             sx={{
-              display: "block",
+              display: 'block',
               mt: 1,
               mb: 2,
               fontWeight: 600,
-              color: "#0a66c2",
-              "&:hover": {
-                color: "#004182",
-                textDecoration: "underline",
-                backgroundColor: "rgba(112, 181, 249, 0.2)",
-                borderRadius: "4px",
+              color: '#0a66c2',
+              '&:hover': {
+                color: '#004182',
+                textDecoration: 'underline',
+                backgroundColor: 'rgba(112, 181, 249, 0.2)',
+                borderRadius: '4px',
               },
             }}
           >
@@ -201,25 +177,25 @@ const LoginPage = () => {
               borderRadius: 50,
               fontWeight: 600,
               fontSize: 16,
-              backgroundColor: "#0a66c2",
-              "&:hover": { backgroundColor: "#004182" },
+              backgroundColor: '#0a66c2',
+              '&:hover': { backgroundColor: '#004182' },
             }}
           >
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
           </Button>
 
-          <Box sx={{ position: "relative", mt: 3, mb: 3 }}>
-            <Divider sx={{ bgcolor: "divider" }} />
+          <Box sx={{ position: 'relative', mt: 3, mb: 3 }}>
+            <Divider sx={{ bgcolor: 'divider' }} />
             <Typography
               variant="body2"
               sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                bgcolor: "background.paper",
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                bgcolor: 'background.paper',
                 px: 2,
-                color: "text.secondary",
+                color: 'text.secondary',
               }}
             >
               or
@@ -227,15 +203,15 @@ const LoginPage = () => {
           </Box>
 
           <Grid container justifyContent="center" sx={{ mt: 3, mb: 2 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Register{" "}
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Register{' '}
               <Link
                 href="#"
                 sx={{
                   fontWeight: 600,
-                  color: "#0a66c2",
-                  "&:hover": {
-                    textDecoration: "underline",
+                  color: '#0a66c2',
+                  '&:hover': {
+                    textDecoration: 'underline',
                   },
                 }}
               >
@@ -245,17 +221,14 @@ const LoginPage = () => {
           </Grid>
         </Box>
 
-        <Box sx={{ mt: 4, textAlign: "center" }}>
-          <Typography
-            variant="caption"
-            sx={{ display: "block", mt: 2, color: "text.secondary" }}
-          >
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Typography variant="caption" sx={{ display: 'block', mt: 2, color: 'text.secondary' }}>
             Trainings © {new Date().getFullYear()}
           </Typography>
         </Box>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
