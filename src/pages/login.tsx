@@ -24,7 +24,7 @@ const LoginPage = () => {
   const [login] = useMutation(LOGIN_MUTATION, {
     onCompleted: data => {
       console.log('Login token:', data)
-      // navigate('/dashboard');
+      navigate('/courses')
     },
     onError: err => {
       console.log(err)
