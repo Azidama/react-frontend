@@ -2,6 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LoginPage from './pages/login'
 import CoursesPage from './pages/course'
+import EnrollmentForm from './pages/enrollment'
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/enrollment" element={<EnrollmentForm />} />
       </Routes>
     </BrowserRouter>
   )

@@ -30,7 +30,25 @@ const LoginPage = () => {
       console.log(err)
     },
   })
-
+  const buttonText = 'Retard'
+  const defaultStyles = {
+    backgroundColor: '#007BFF',
+    color: 'white',
+    border: 'none',
+    borderRadius: '999px',
+    padding: '10px 20px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    boxShadow: 'black 20px',
+    transition: 'background-color 0.3s ease',
+  }
+  const defaultStylesOnHover = {
+    backgroundColor: '#FF7B22',
+    color: 'white',
+    boxShadow: 'black 20px',
+    transition: 'background-color 0.3s ease',
+  }
   const onSubmit = async (data: FormData) => {
     try {
       setError('')
@@ -226,6 +244,7 @@ const LoginPage = () => {
             Trainings © {new Date().getFullYear()}
           </Typography>
         </Box>
+        <button style={{ ...defaultStyles, ...defaultStylesOnHover }}>{buttonText}</button>
       </Box>
     </Container>
   )
